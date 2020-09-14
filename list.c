@@ -34,11 +34,11 @@ void list_free(list_t *l)
 
 void list_print(list_t *l) 
 {
-  node_t *temp = l->head;
+  node_t* temp = l->head;
   while(temp)
   {
     int num = temp->value;
-    printf("Node is: %d", num);;
+    printf("Node is: %d \n", num);;
     temp = temp->next;
   }
 }
@@ -57,29 +57,28 @@ int list_length(list_t *l)
 void list_add_to_back(list_t *l, elem value) 
 {
   node_t *temp = l->head;
-  while(temp->next)
+  while(temp->next != NULL)
   {
     temp = temp->next;
   }
-  temp->next = list_alloc()->head;
-  temp->value = value;
+  
+  temp->next = malloc(sizeof(node_t));
+  temp->next->value = value;
+  
   
 }
 void list_add_to_front(list_t *l, elem value) 
 {
-  list_t *temp = list_alloc();
-  temp->head->value = value;
-  temp->head->next = l->head->next;
-  l = temp;
+  node_t* head1 = malloc(sizeof(node_t)); 
+  head1->value = value;
+  head1->next = l->head;
+  l->head = head1;
+  printf("%d \n", l->head->value);
+
 }
 void list_add_at_index(list_t *l, elem value, int index) 
 {
-  if (l == NULL)
-  {
-    list_t *temp = list_alloc();
-    l = temp;
-    l->head->value = value;
-  }
+
   if(index == 0)
   {
     list_add_to_front(l, value);
@@ -93,9 +92,10 @@ void list_add_at_index(list_t *l, elem value, int index)
       temp = temp->next;
       lenIndex++;
     }
-    node_t *temp2 = list_alloc()->head->next;
+    node_t *temp2 = malloc(sizeof(node_t));
     temp2->next = temp->next;
     temp->next = temp2;
+    temp2->value = value;
     
 
   }
@@ -109,7 +109,8 @@ elem list_remove_from_back(list_t *l)
     temp = temp->next;
   }
   int temp1 = temp->next->value;
-  free(l);
+  free(temp->next);
+  temp->next =NULL;
   return temp1;
 }
 elem list_remove_from_front(list_t *l) 
@@ -135,8 +136,9 @@ elem list_remove_at_index(list_t *l, int index)
     while (lenL != index)
     {
       temp = temp->next;
+      lenL++;
     }
-    node_t *temp1 = temp->next;
+    int temp1 = temp->next->value;
     node_t *temp2;
     temp2 = temp->next;
     if(temp->next->next)
@@ -145,7 +147,7 @@ elem list_remove_at_index(list_t *l, int index)
       temp->next = temp->next->next;
     }
     free(temp2);
-    return temp1->value;
+    return temp1;
   }
   
   
@@ -160,9 +162,11 @@ bool list_is_in(list_t *l, elem value)
      if (temp->value == value)
      {
        return true;
+       printf("TRUE");
      }
      temp = temp->next;
    }
+  printf("False");
   return false;
 }
 
@@ -174,6 +178,7 @@ elem list_get_elem_at(list_t *l, int index)
   while (lenL != index)
   {
     temp = temp->next;
+    lenL++;
   }
   return temp->value;
   
